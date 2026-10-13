@@ -12,10 +12,10 @@ It is built for the way small shops in Latin America already sell: people find t
 - Margin that never appears in the customer copy or the card
 - Copy for WhatsApp, Instagram, Threads, and LinkedIn, with each network’s character limit
 - A downloadable 1080×1080 card in paper, ink, or clinic styles
-- Today’s Venezuela dollar: official BCV and street (paralelo), with the offer total in bolívares
+- Today’s Venezuela rates: official BCV dollar, street dollar, and official BCV euro, with a dollar or euro offer total in bolívares
 - A shareable link and local save in the browser
 
-The bolívar figure uses [DolarApi](https://dolarapi.com/docs/venezuela/) (`/v1/dolares`). The street rate is the default. The offer link does not freeze the rate; the page reads it again when someone opens it.
+The bolívar figure uses [DolarApi](https://dolarapi.com/docs/venezuela/) (`/v1/dolares` and `/v1/euros`). The street dollar is the default for a dollar offer. A euro offer uses the official BCV euro. The offer link does not freeze the rate; the page reads it again when someone opens it.
 
 Examples are fictional shops, not client work.
 
