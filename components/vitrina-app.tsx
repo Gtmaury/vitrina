@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { drawCard } from "@/lib/draw-card";
 import { readBoard, toBolivares, type DolarBoard, type DolarFuente } from "@/lib/dolar";
-import { formatBolivares, formatMoney, formatPercent, formatRateTime, slugify } from "@/lib/format";
+import { currencyLabel, formatBolivares, formatMoney, formatPercent, formatRateTime, slugify } from "@/lib/format";
 import { text } from "@/lib/i18n";
 import { channelLimit, messageFor, whatsappHref, type BolivarNote } from "@/lib/messages";
 import { PRESET_BUILDERS } from "@/lib/presets";
@@ -404,7 +404,7 @@ export function VitrinaApp() {
               >
                 {CURRENCIES.map((currency) => (
                   <option key={currency} value={currency}>
-                    {currency}
+                    {currencyLabel(currency)}
                   </option>
                 ))}
               </select>
@@ -729,7 +729,7 @@ function PublishPanel({
               </p>
             ) : null}
           </div>
-          <Badge variant="secondary">{offer.currency}</Badge>
+          <Badge variant="secondary">{currencyLabel(offer.currency)}</Badge>
         </div>
         <dl className="mt-3 grid grid-cols-3 gap-2 text-sm">
           <div>

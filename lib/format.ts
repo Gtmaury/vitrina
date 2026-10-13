@@ -1,6 +1,11 @@
 import type { Currency, Lang } from "./types";
 
+export function currencyLabel(currency: Currency) {
+  return currency === "VES" ? "Bs" : currency;
+}
+
 export function formatMoney(amount: number, currency: Currency, lang: Lang) {
+  if (currency === "VES") return formatBolivares(amount);
   const locale = lang === "es" ? "es-419" : "en-US";
   const fraction = currency === "COP" ? 0 : 2;
   return new Intl.NumberFormat(locale, {
