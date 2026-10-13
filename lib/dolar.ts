@@ -6,9 +6,15 @@ export type DolarQuote = {
   fechaActualizacion: string;
 };
 
+export type EuroQuote = {
+  promedio: number;
+  fechaActualizacion: string;
+};
+
 export type DolarBoard = {
   oficial: DolarQuote | null;
   paralelo: DolarQuote | null;
+  euroOficial: EuroQuote | null;
 };
 
 function isRecord(value: unknown): value is Record<string, unknown> {
@@ -32,9 +38,22 @@ export function parseDolares(payload: unknown): DolarBoard | null {
   const board = {
     oficial: readQuote(payload, "oficial"),
     paralelo: readQuote(payload, "paralelo"),
+    euroOficial: null,
   };
   if (!board.oficial && !board.paralelo) return null;
   return board;
+}
+
+export function parseEuroOficial(payload: unknown): EuroQuote | null {
+  if (!Array.isArray(payload)) return null;
+  const row = payload.find(
+    (item) => isRecord(item) && item.moneda === "EUR" && item.fuente === "oficial",
+  );
+  if (!isRecord(row) || typeof row.promedio !== "number" || row.promedio <= 0) return null;
+  return {
+    promedio: row.promedio,
+    fechaActualizacion: typeof row.fechaActualizacion === "string" ? row.fechaActualizacion : "",
+  };
 }
 
 function readStored(value: unknown, fuente: DolarFuente): DolarQuote | null {
@@ -47,13 +66,23 @@ function readStored(value: unknown, fuente: DolarFuente): DolarQuote | null {
   };
 }
 
+function readEuro(value: unknown): EuroQuote | null {
+  if (!isRecord(value)) return null;
+  if (typeof value.promedio !== "number" || value.promedio <= 0) return null;
+  return {
+    promedio: value.promedio,
+    fechaActualizacion: typeof value.fechaActualizacion === "string" ? value.fechaActualizacion : "",
+  };
+}
+
 export function readBoard(payload: unknown): DolarBoard | null {
   if (!isRecord(payload)) return null;
   const board = {
     oficial: readStored(payload.oficial, "oficial"),
     paralelo: readStored(payload.paralelo, "paralelo"),
+    euroOficial: readEuro(payload.euroOficial),
   };
-  if (!board.oficial && !board.paralelo) return null;
+  if (!board.oficial && !board.paralelo && !board.euroOficial) return null;
   return board;
 }
 

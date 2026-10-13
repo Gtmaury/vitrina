@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { parseDolares, readBoard, toBolivares } from "./dolar.ts";
+import { parseDolares, parseEuroOficial, readBoard, toBolivares } from "./dolar.ts";
 
 const sample = [
   {
@@ -42,4 +42,35 @@ test("ignores a payload without a usable rate", () => {
 test("accepts the board the app route returns", () => {
   const board = parseDolares(sample);
   assert.equal(readBoard(board)?.paralelo?.promedio, 1008.350665);
+});
+
+const euros = [
+  {
+    moneda: "EUR",
+    fuente: "oficial",
+    nombre: "Euro",
+    compra: null,
+    venta: null,
+    promedio: 982.00454402,
+    fechaActualizacion: "2026-10-13T00:00:00-04:00",
+  },
+  {
+    moneda: "EUR",
+    fuente: "paralelo",
+    nombre: "Paralelo",
+    promedio: 1129.123136,
+    fechaActualizacion: "2026-10-13T20:01:26.811Z",
+  },
+];
+
+test("reads only the official euro", () => {
+  assert.equal(parseEuroOficial(euros)?.promedio, 982.00454402);
+  assert.equal(parseEuroOficial([{ moneda: "EUR", fuente: "paralelo", promedio: 10 }]), null);
+});
+
+test("keeps the official euro on the board the page reads", () => {
+  const dollars = parseDolares(sample);
+  const board = readBoard({ ...dollars, euroOficial: parseEuroOficial(euros) });
+  assert.equal(board?.euroOficial?.promedio, 982.00454402);
+  assert.equal(readBoard({ oficial: null, paralelo: null, euroOficial: parseEuroOficial(euros) })?.euroOficial?.promedio, 982.00454402);
 });
